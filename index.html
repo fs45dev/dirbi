@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Verificador de Obrigatoriedade da DIRBI</title>
+  <meta name="description" content="Ferramenta local para verificar se a pessoa jurídica está obrigada a transmitir a DIRBI no período de referência." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#formulario">Ir para o formulário</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="crest" aria-hidden="true">RF</div>
+        <div>
+          <h1>Verificador de Obrigatoriedade da DIRBI</h1>
+          <p>Declaração de Incentivos, Renúncias, Benefícios e Imunidades de Natureza Tributária</p>
+          <p><b>Fábio Gonzaga de Matos</b></p>
+        </div>
+      </div>
+      <div class="meta-pills" aria-label="Base normativa">
+        <span class="pill">Lei nº 14.973/2024</span>
+        <span class="pill">IN RFB nº 2.198/2024</span>
+        <span class="pill">IN RFB nº 2.294/2025</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <aside class="legal-strip" aria-label="Contexto legal">
+      <strong>Base legal embutida.</strong>
+      A DIRBI foi prevista na MP nº 1.227/2024 e consolidada no art. 43 da Lei nº 14.973/2024,
+      regulamentada pela IN RFB nº 2.198/2024 e alterada pela IN RFB nº 2.294/2025
+      (DOU 15/12/2025), que substituiu o Anexo Único e ampliou o rol de <strong>88 para 173</strong> benefícios.
+      Itens 89 a 173 são exigíveis nas DIRBI de períodos de apuração de <strong>janeiro/2026 e posteriores</strong>.
+      Aplicação 100% no navegador — sem servidor.
+    </aside>
+
+    <div class="grid">
+      <section class="card" aria-labelledby="titulo-form">
+        <header>
+          <h2 id="titulo-form">Dados cadastrais da pessoa jurídica</h2>
+          <p>Preencha os campos para emitir o parecer de sujeição. Campos com <span class="req">*</span> são obrigatórios.</p>
+        </header>
+
+        <form id="formulario" novalidate>
+          <div class="row">
+            <div class="field span-2">
+              <label for="razaoSocial">Razão social <span class="req">*</span></label>
+              <input id="razaoSocial" name="razaoSocial" type="text" autocomplete="organization" maxlength="150" required />
+              <span class="hint" id="hint-razaoSocial">Preenchida automaticamente ao informar um CNPJ válido.</span>
+              <span class="error" id="err-razaoSocial" role="alert"></span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="cnpj">CNPJ <span class="req">*</span></label>
+              <input id="cnpj" name="cnpj" type="text" inputmode="numeric" placeholder="00.000.000/0000-00" maxlength="18" required />
+              <span class="hint" id="hint-cnpj">Validação dos dígitos e consulta da razão social no cadastro público.</span>
+              <span class="error" id="err-cnpj" role="alert"></span>
+            </div>
+            <div class="field">
+              <label for="periodo">Mês/ano de referência <span class="req">*</span></label>
+              <input id="periodo" name="periodo" type="month" required />
+              <span class="error" id="err-periodo" role="alert"></span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="cnaeCodigo">CNAE principal — código <span class="req">*</span></label>
+              <input id="cnaeCodigo" name="cnaeCodigo" type="text" placeholder="0000-0/00" maxlength="9" required />
+              <span class="hint" id="hint-cnaeCodigo">Ao completar o código, a descrição oficial é preenchida.</span>
+              <span class="error" id="err-cnaeCodigo" role="alert"></span>
+            </div>
+            <div class="field">
+              <label for="cnaeDescricao">CNAE principal — descrição <span class="req">*</span></label>
+              <input id="cnaeDescricao" name="cnaeDescricao" type="text" list="listaCnae" placeholder="Preenchida pelo código do CNAE" required />
+              <datalist id="listaCnae"></datalist>
+              <span class="error" id="err-cnaeDescricao" role="alert"></span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="regime">Regime tributário <span class="req">*</span></label>
+            <select id="regime" name="regime" required>
+              <option value="">Selecione</option>
+              <option value="lucro-real">Lucro Real</option>
+              <option value="lucro-presumido">Lucro Presumido</option>
+              <option value="simples-nacional">Simples Nacional</option>
+              <option value="imune">Imune</option>
+              <option value="isenta">Isenta</option>
+            </select>
+            <span class="error" id="err-regime" role="alert"></span>
+          </div>
+
+          <div class="field">
+            <span class="label-like" style="font-size:0.78rem;font-weight:650;color:var(--navy-800);letter-spacing:.02em;text-transform:uppercase;">
+              Utilizou algum benefício fiscal, incentivo, renúncia ou imunidade no período? <span class="req">*</span>
+            </span>
+            <div class="radios" role="radiogroup" aria-label="Usufruiu benefício">
+              <label class="radio"><input type="radio" name="usufruiu" value="sim" /> Sim</label>
+              <label class="radio"><input type="radio" name="usufruiu" value="nao" /> Não</label>
+            </div>
+            <span class="error" id="err-usufruiu" role="alert"></span>
+          </div>
+
+          <div class="field hidden" id="blocoCprb">
+            <span class="label-like" style="font-size:0.78rem;font-weight:650;color:var(--navy-800);letter-spacing:.02em;text-transform:uppercase;">
+              Se Simples Nacional: utilizou CPRB no período? <span class="req">*</span>
+            </span>
+            <div class="radios" role="radiogroup" aria-label="Utilizou CPRB">
+              <label class="radio"><input type="radio" name="cprb" value="sim" /> Sim</label>
+              <label class="radio"><input type="radio" name="cprb" value="nao" /> Não</label>
+            </div>
+            <span class="hint">A dispensa do Simples Nacional não se aplica à PJ sujeita à CPRB (art. 3º, §1º, da IN RFB nº 2.198/2024).</span>
+            <span class="error" id="err-cprb" role="alert"></span>
+          </div>
+
+          <div class="field hidden" id="blocoBeneficios">
+            <label for="filtroBeneficio">Benefícios usufruídos (opcional — Anexo Único)</label>
+            <div class="benef-toolbar">
+              <input id="filtroBeneficio" type="text" placeholder="Filtrar por código, tributo ou nome" />
+            </div>
+            <div id="listaBeneficios" class="benef-list" role="group" aria-label="Lista do Anexo Único"></div>
+            <span class="hint">Lista carregada de <code>beneficios.xml</code>. Itens 89–173 destacados quando o período for anterior a jan/2026.</span>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn-primary">Emitir parecer</button>
+            <button type="button" class="btn-ghost" id="btnLimpar">Limpar</button>
+            <button type="button" class="btn-ghost" id="btnExportar">Exportar empresas.xml</button>
+            <label class="btn-ghost" for="importXml" style="margin:0;">Importar XML</label>
+            <input id="importXml" type="file" accept=".xml,text/xml" class="hidden" />
+          </div>
+        </form>
+      </section>
+
+      <aside class="card" id="painelResultado" aria-live="polite">
+        <header>
+          <h2>Parecer de obrigatoriedade</h2>
+          <p>Motivo, base legal, prazo e alerta de penalidade.</p>
+        </header>
+        <div id="resultado">
+          <div class="placeholder">
+            <strong>Aguardando preenchimento</strong>
+            Informe CNPJ, CNAE, regime e o uso de benefícios para determinar se a empresa está obrigada a transmitir a DIRBI no período.
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="card historico" aria-labelledby="titulo-historico">
+      <header>
+        <h2 id="titulo-historico">Consultas desta sessão</h2>
+        <p>Os pareceres emitidos ficam disponíveis para exportação no schema de <code>empresas.xml</code>.</p>
+      </header>
+      <div class="card-body table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>CNPJ</th>
+              <th>Razão social</th>
+              <th>Regime</th>
+              <th>Período</th>
+              <th>Resultado</th>
+              <th>Prazo</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaHistorico">
+            <tr><td colspan="6">Nenhuma consulta emitida nesta sessão.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Ferramenta de apoio à análise. Não substitui consulta ao texto vigente da IN RFB nº 2.198/2024 e respectivo Anexo Único,
+    nem o envio da declaração no e-CAC. Multas previstas no art. 44 da Lei nº 14.973/2024 e no art. 7º da IN RFB nº 2.198/2024. |
+    <b>Fábio Gonzaga de Matos</b>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <!--
+    Cópia de fallback do Anexo para execução em file:// (sem servidor).
+    Quando houver servidor local, o script prioriza beneficios.xml.
+  -->
+  <script type="text/xml" id="beneficios-inline">
+<!--
+  Anexo Único da IN RFB nº 2.198/2024, com a redação dada pela IN RFB nº 2.294/2025
+  (publicada no DOU de 15/12/2025). Lista parametrizável para atualização anual.
+
+  Observações de implementação:
+  - Itens 01 a 88: exigíveis nas DIRBI já sob a sistemática vigente.
+  - Itens 89 a 173: informações obrigatórias apenas nas DIRBI de períodos
+    de apuração de janeiro/2026 e posteriores (art. 3º da IN RFB nº 2.294/2025).
+  - Esta lista simula o Anexo Único com os benefícios mais recorrentes e com
+    os novos grupos citados pela RFB. Atualize códigos/descrições sem alterar o JS.
+  - Atributo vigenciaInicio: AAAAMM a partir do qual o item gera obrigação.
+-->
+<beneficios fonte="IN RFB 2.198/2024 alterada pela IN RFB 2.294/2025" totalOficial="173" geradoEm="2026-09">
+  <!-- ===== GRUPO A — Itens 01–88 (já exigíveis) ===== -->
+  <beneficio codigo="01" vigenciaInicio="202401" tributos="IRPJ;CSLL;PIS/Pasep;Cofins">
+    <nome>PERSE — Programa Emergencial de Retomada do Setor de Eventos</nome>
+    <descricao>Redução a zero das alíquotas de IRPJ, CSLL, PIS/Pasep e Cofins incidentes sobre o resultado das PJ do setor de eventos (Lei nº 14.148/2021, art. 4º).</descricao>
+  </beneficio>
+  <beneficio codigo="02" vigenciaInicio="202401" tributos="IPI;PIS/Pasep;Cofins">
+    <nome>RECAP — Regime Especial de Aquisição de Bens de Capital para Empresas Exportadoras</nome>
+    <descricao>Suspensão de PIS/Pasep, Cofins e IPI na aquisição de bens de capital por empresas preponderantemente exportadoras.</descricao>
+  </beneficio>
+  <beneficio codigo="03" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins;IPI">
+    <nome>REIDI — Regime Especial de Incentivos para o Desenvolvimento da Infraestrutura</nome>
+    <descricao>Suspensão de PIS/Pasep, Cofins e IPI nas aquisições e importações vinculadas a obras de infraestrutura.</descricao>
+  </beneficio>
+  <beneficio codigo="04" vigenciaInicio="202401" tributos="IPI;PIS/Pasep;Cofins;II">
+    <nome>REPORTO — Regime Tributário para Incentivo à Modernização e à Ampliação da Estrutura Portuária</nome>
+    <descricao>Suspensão de tributos na aquisição/importação de máquinas, equipamentos e outros bens destinados a portos e instalações portuárias.</descricao>
+  </beneficio>
+  <beneficio codigo="05" vigenciaInicio="202401" tributos="IPI;PIS/Pasep;Cofins;II">
+    <nome>PADIS — Programa de Apoio ao Desenvolvimento Tecnológico da Indústria de Semicondutores</nome>
+    <descricao>Redução a zero de alíquotas na aquisição/importação de máquinas, insumos e na comercialização de dispositivos semicondutores habilitados.</descricao>
+  </beneficio>
+  <beneficio codigo="06" vigenciaInicio="202401" tributos="IRPJ;CSLL;PIS/Pasep;Cofins">
+    <nome>RET — Regime Especial de Tributação (incorporações e construções)</nome>
+    <descricao>Tributação unificada/reduzida aplicável a incorporações imobiliárias e construções de unidades habitacionais (RET Incorporações / RET Construções).</descricao>
+  </beneficio>
+  <beneficio codigo="07" vigenciaInicio="202401" tributos="Contribuições previdenciárias;CPRB">
+    <nome>CPRB — Contribuição Previdenciária sobre a Receita Bruta (desoneração da folha)</nome>
+    <descricao>Substituição da contribuição patronal sobre a folha pela CPRB, nos termos da Lei nº 12.546/2011 e da Lei nº 14.973/2024 (reoneração gradual).</descricao>
+  </beneficio>
+  <beneficio codigo="08" vigenciaInicio="202401" tributos="IPI;PIS/Pasep;Cofins;II">
+    <nome>Zona Franca de Manaus — incentivos federais</nome>
+    <descricao>Isenções, suspensões e créditos presumidos aplicáveis a indústrias e comércios habilitados na ZFM.</descricao>
+  </beneficio>
+  <beneficio codigo="09" vigenciaInicio="202401" tributos="IPI;PIS/Pasep;Cofins;II">
+    <nome>Áreas de Livre Comércio</nome>
+    <descricao>Benefícios de IPI, PIS/Pasep, Cofins e Imposto de Importação nas Áreas de Livre Comércio.</descricao>
+  </beneficio>
+  <beneficio codigo="10" vigenciaInicio="202401" tributos="II;IPI;PIS/Pasep;Cofins">
+    <nome>Drawback (isenção, suspensão e restituição)</nome>
+    <descricao>Regime aduaneiro especial de drawback nas modalidades isenção, suspensão e restituição.</descricao>
+  </beneficio>
+  <beneficio codigo="11" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Lei do Bem — pesquisa, desenvolvimento e inovação tecnológica</nome>
+    <descricao>Exclusões e deduções de IRPJ/CSLL relativas a dispêndios com P&amp;D (Lei nº 11.196/2005).</descricao>
+  </beneficio>
+  <beneficio codigo="12" vigenciaInicio="202401" tributos="IRPJ">
+    <nome>PAT — Programa de Alimentação do Trabalhador</nome>
+    <descricao>Dedução do IRPJ relativa ao Programa de Alimentação do Trabalhador.</descricao>
+  </beneficio>
+  <beneficio codigo="13" vigenciaInicio="202401" tributos="IRPJ;CSLL;PIS/Pasep;Cofins">
+    <nome>PROUNI — Programa Universidade para Todos</nome>
+    <descricao>Isenção de IRPJ, CSLL, PIS/Pasep e Cofins para instituições de ensino superior aderentes ao Prouni.</descricao>
+  </beneficio>
+  <beneficio codigo="14" vigenciaInicio="202401" tributos="IRPJ">
+    <nome>Incentivo ao desporto</nome>
+    <descricao>Dedução do IRPJ de doações e patrocínios a projetos desportivos aprovados (Lei nº 11.438/2006).</descricao>
+  </beneficio>
+  <beneficio codigo="15" vigenciaInicio="202401" tributos="IRPJ">
+    <nome>PRONAC / Lei Rouanet</nome>
+    <descricao>Dedução do IRPJ de doações e patrocínios a projetos culturais (Lei nº 8.313/1991).</descricao>
+  </beneficio>
+  <beneficio codigo="16" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Subvenção para investimento / crédito de subvenção</nome>
+    <descricao>Tratamento tributário de subvenções para investimento e crédito correspondente, na forma da legislação do IRPJ/CSLL.</descricao>
+  </beneficio>
+  <beneficio codigo="17" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Alíquota zero de PIS/Pasep e Cofins — produtos da cesta básica e correlatos</nome>
+    <descricao>Redução a zero das contribuições sobre operações com produtos alimentícios e correlatos previstos em lei.</descricao>
+  </beneficio>
+  <beneficio codigo="18" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Crédito presumido de PIS/Pasep e Cofins — agronegócio</nome>
+    <descricao>Créditos presumidos na aquisição de insumos agropecuários e na industrialização de produtos rurais.</descricao>
+  </beneficio>
+  <beneficio codigo="19" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Regime monofásico de PIS/Pasep e Cofins — combustíveis</nome>
+    <descricao>Incidência monofásica e alíquotas específicas/reduzidas sobre combustíveis.</descricao>
+  </beneficio>
+  <beneficio codigo="20" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Regime monofásico de PIS/Pasep e Cofins — medicamentos</nome>
+    <descricao>Incidência monofásica e redução de alíquotas sobre produtos farmacêuticos.</descricao>
+  </beneficio>
+  <beneficio codigo="21" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Regime monofásico de PIS/Pasep e Cofins — veículos e autopeças</nome>
+    <descricao>Incidência monofásica sobre veículos e autopeças.</descricao>
+  </beneficio>
+  <beneficio codigo="22" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Alíquota zero / crédito — produtos hortícolas, frutas e ovos</nome>
+    <descricao>Benefícios de PIS/Pasep e Cofins sobre hortícolas, frutas e ovos.</descricao>
+  </beneficio>
+  <beneficio codigo="23" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Alíquota zero — livros, jornais e periódicos (e digitais)</nome>
+    <descricao>Redução a zero de PIS/Pasep e Cofins na comercialização de livros, inclusive digitais.</descricao>
+  </beneficio>
+  <beneficio codigo="24" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Transporte coletivo de passageiros — benefícios de PIS/Cofins</nome>
+    <descricao>Redução/isenção aplicável ao transporte coletivo público de passageiros.</descricao>
+  </beneficio>
+  <beneficio codigo="25" vigenciaInicio="202401" tributos="IPI">
+    <nome>IPI — redução ou isenção setorial (informática, bens de capital, automotivo)</nome>
+    <descricao>Redução de alíquotas ou isenção de IPI em programas setoriais (informática, bens de capital, automotivo).</descricao>
+  </beneficio>
+  <beneficio codigo="26" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Lucro da exploração — redução de IRPJ (SUDENE/SUDAM e correlatos)</nome>
+    <descricao>Redução do IRPJ incidente sobre o lucro da exploração em empreendimentos incentivados nas áreas da SUDENE/SUDAM.</descricao>
+  </beneficio>
+  <beneficio codigo="27" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Reinvestimento — regiões incentivadas</nome>
+    <descricao>Depósito para reinvestimento de parcela do IRPJ em projetos aprovados nas regiões incentivadas.</descricao>
+  </beneficio>
+  <beneficio codigo="28" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins;IPI">
+    <nome>REPETRO / REPETRO-SPED (permanente e temporário)</nome>
+    <descricao>Regime especial de tributação para o setor de petróleo e gás (industrialização, permanente e temporário).</descricao>
+  </beneficio>
+  <beneficio codigo="29" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins;IPI;II">
+    <nome>REPETRO-Industrialização</nome>
+    <descricao>Suspensão de tributos na industrialização de bens destinados às atividades de exploração e produção de petróleo e gás.</descricao>
+  </beneficio>
+  <beneficio codigo="30" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Exportação — imunidade/não incidência de PIS/Pasep e Cofins</nome>
+    <descricao>Não incidência das contribuições sobre receitas de exportação de bens e serviços.</descricao>
+  </beneficio>
+  <beneficio codigo="31" vigenciaInicio="202401" tributos="IPI">
+    <nome>IPI — imunidade/não incidência na exportação</nome>
+    <descricao>Não incidência de IPI sobre produtos industrializados destinados ao exterior.</descricao>
+  </beneficio>
+  <beneficio codigo="32" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Receitas financeiras — alíquota zero / redução (hipóteses legais)</nome>
+    <descricao>Redução a zero ou alíquota reduzida de PIS/Pasep e Cofins sobre determinadas receitas financeiras.</descricao>
+  </beneficio>
+  <beneficio codigo="33" vigenciaInicio="202401" tributos="IRPJ">
+    <nome>Fundos da Criança e do Adolescente</nome>
+    <descricao>Dedução do IRPJ de doações aos Fundos dos Direitos da Criança e do Adolescente.</descricao>
+  </beneficio>
+  <beneficio codigo="34" vigenciaInicio="202401" tributos="IRPJ">
+    <nome>Fundos do Idoso</nome>
+    <descricao>Dedução do IRPJ de doações aos Fundos dos Direitos da Pessoa Idosa.</descricao>
+  </beneficio>
+  <beneficio codigo="35" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Doações para conservação ambiental</nome>
+    <descricao>Deduções e incentivos fiscais vinculados a doações para conservação ambiental.</descricao>
+  </beneficio>
+  <beneficio codigo="36" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Entidades imunes/isentas — contribuições sociais (hipóteses do Anexo)</nome>
+    <descricao>Não incidência ou isenção de PIS/Pasep e Cofins para entidades que se enquadrem nas hipóteses listadas no Anexo Único.</descricao>
+  </beneficio>
+  <beneficio codigo="37" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Cooperativas — atos cooperativos (PIS/Cofins)</nome>
+    <descricao>Não incidência de PIS/Pasep e Cofins sobre atos cooperativos próprios.</descricao>
+  </beneficio>
+  <beneficio codigo="38" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Sociedades cooperativas — resultado do ato cooperativo</nome>
+    <descricao>Tratamento do resultado do ato cooperativo para fins de IRPJ e CSLL.</descricao>
+  </beneficio>
+  <beneficio codigo="39" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Reciclagem — crédito presumido de PIS/Pasep e Cofins</nome>
+    <descricao>Crédito presumido na aquisição de resíduos sólidos utilizados como matéria-prima.</descricao>
+  </beneficio>
+  <beneficio codigo="40" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Biodiesel e etanol — benefícios de PIS/Pasep e Cofins</nome>
+    <descricao>Alíquotas reduzidas, monofasia ou créditos presumidos na cadeia de biocombustíveis.</descricao>
+  </beneficio>
+  <beneficio codigo="41" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Gás natural e carvão mineral — benefícios setoriais</nome>
+    <descricao>Tratamento favorecido de PIS/Pasep e Cofins aplicável a gás natural e carvão mineral.</descricao>
+  </beneficio>
+  <beneficio codigo="42" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Energia elétrica — Câmara de Comercialização e hipóteses especiais</nome>
+    <descricao>Benefícios de PIS/Pasep e Cofins em operações no mercado de energia elétrica.</descricao>
+  </beneficio>
+  <beneficio codigo="43" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins;IPI">
+    <nome>REPES — Regime Especial de Tributação para a Plataforma de Exportação de Serviços de Tecnologia da Informação</nome>
+    <descricao>Suspensão de PIS/Pasep, Cofins e IPI para empresas habilitadas no REPES.</descricao>
+  </beneficio>
+  <beneficio codigo="44" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins;IPI">
+    <nome>RETID — Regime Especial Tributário para a Indústria de Defesa</nome>
+    <descricao>Suspensão de tributos nas aquisições da indústria de defesa habilitada.</descricao>
+  </beneficio>
+  <beneficio codigo="45" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins;IRPJ;CSLL">
+    <nome>RECINE — Regime Especial de Tributação para Desenvolvimento da Atividade de Exibição Cinematográfica</nome>
+    <descricao>Benefícios tributários para implantação e modernização de salas de cinema.</descricao>
+  </beneficio>
+  <beneficio codigo="46" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins;IPI;II">
+    <nome>ZPE — Zona de Processamento de Exportação</nome>
+    <descricao>Suspensão/isenção de tributos federais para empresas autorizadas em ZPE.</descricao>
+  </beneficio>
+  <beneficio codigo="47" vigenciaInicio="202401" tributos="II;IPI;PIS/Pasep;Cofins">
+    <nome>EIZOF / zonas de fronteira — benefícios aduaneiros</nome>
+    <descricao>Tratamento tributário especial em zonas de fronteira e áreas correlatas.</descricao>
+  </beneficio>
+  <beneficio codigo="48" vigenciaInicio="202401" tributos="II;IPI;PIS/Pasep;Cofins">
+    <nome>Importação de partes e peças de aeronaves e embarcações (Lei nº 8.032/1990)</nome>
+    <descricao>Redução/isenção na importação de partes e peças destinadas a aeronaves e embarcações.</descricao>
+  </beneficio>
+  <beneficio codigo="49" vigenciaInicio="202401" tributos="II;IPI;PIS/Pasep;Cofins">
+    <nome>Partes e peças para embarcações no Registro Especial Brasileiro (REB)</nome>
+    <descricao>Benefícios na importação e venda de partes e peças destinadas a embarcações registradas ou pré-registradas no REB.</descricao>
+  </beneficio>
+  <beneficio codigo="50" vigenciaInicio="202401" tributos="IPI;PIS/Pasep;Cofins">
+    <nome>Bens de informática e automação — Lei de Informática</nome>
+    <descricao>Redução de IPI e benefícios correlatos para fabricantes habilitados na Lei de Informática.</descricao>
+  </beneficio>
+  <beneficio codigo="51" vigenciaInicio="202401" tributos="IPI;PIS/Pasep;Cofins">
+    <nome>Aerogeradores, energia eólica e solar — bens de geração</nome>
+    <descricao>Redução/suspensão de tributos na industrialização e importação de bens de geração renovável.</descricao>
+  </beneficio>
+  <beneficio codigo="52" vigenciaInicio="202401" tributos="IPI;PIS/Pasep;Cofins">
+    <nome>Trens de alta velocidade e material ferroviário</nome>
+    <descricao>Benefícios na aquisição/industrialização de material ferroviário e sistemas de alta velocidade.</descricao>
+  </beneficio>
+  <beneficio codigo="53" vigenciaInicio="202401" tributos="IPI;PIS/Pasep;Cofins">
+    <nome>Veículos blindados e defesa civil/militar</nome>
+    <descricao>Tratamento favorecido na industrialização e comercialização de veículos blindados e correlatos.</descricao>
+  </beneficio>
+  <beneficio codigo="54" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Dispositivos médicos e produtos para a saúde</nome>
+    <descricao>Alíquota zero ou reduzida de PIS/Pasep e Cofins sobre dispositivos médicos.</descricao>
+  </beneficio>
+  <beneficio codigo="55" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Produtos de acessibilidade para pessoas com deficiência</nome>
+    <descricao>Alíquota zero sobre cadeiras de rodas, aparelhos auditivos, implantes, próteses, softwares de acessibilidade e correlatos.</descricao>
+  </beneficio>
+  <beneficio codigo="56" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Medicamentos e insumos hospitalares — alíquota zero / monofasia</nome>
+    <descricao>Benefícios de PIS/Pasep e Cofins sobre medicamentos e insumos hospitalares.</descricao>
+  </beneficio>
+  <beneficio codigo="57" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Depreciação acelerada incentivada</nome>
+    <descricao>Depreciação acelerada de bens do ativo imobilizado em hipóteses legais específicas.</descricao>
+  </beneficio>
+  <beneficio codigo="58" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Operações de cobertura (hedge)</nome>
+    <descricao>Tratamento tributário de resultados de operações de hedge, nas hipóteses do Anexo Único.</descricao>
+  </beneficio>
+  <beneficio codigo="59" vigenciaInicio="202401" tributos="IRPJ">
+    <nome>Programa Empresa Cidadã</nome>
+    <descricao>Dedução do IRPJ relativa à prorrogação da licença-maternidade/paternidade (Lei nº 11.770/2008).</descricao>
+  </beneficio>
+  <beneficio codigo="60" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Inovação e capacitação — incentivos adicionais de IRPJ/CSLL</nome>
+    <descricao>Deduções e exclusões vinculadas a capacitação tecnológica e inovação além da Lei do Bem.</descricao>
+  </beneficio>
+  <beneficio codigo="61" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Crédito presumido — leite in natura / Programa Mais Leite Saudável</nome>
+    <descricao>Crédito presumido de PIS/Pasep (0,825%) e Cofins (3,8%) sobre aquisição de leite in natura por habilitados no Programa Mais Leite Saudável.</descricao>
+  </beneficio>
+  <beneficio codigo="62" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Crédito presumido — carnes suína e avícola</nome>
+    <descricao>Crédito presumido de PIS (0,198%) e Cofins (0,912%) na aquisição de carnes suína e de aves tributadas à alíquota zero, para industrialização no lucro real não cumulativo.</descricao>
+  </beneficio>
+  <beneficio codigo="63" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Sêmens, embriões e material genético animal</nome>
+    <descricao>Benefícios de PIS/Pasep e Cofins na comercialização de sêmens, embriões e material genético.</descricao>
+  </beneficio>
+  <beneficio codigo="64" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Soja, laranja, café e produtos agropecuários — hipóteses do Anexo</nome>
+    <descricao>Alíquota zero, suspensão ou crédito presumido sobre cadeias agropecuárias específicas.</descricao>
+  </beneficio>
+  <beneficio codigo="65" vigenciaInicio="202401" tributos="Contribuições previdenciárias">
+    <nome>GILRAT — tratamento favorecido / redução de alíquota</nome>
+    <descricao>Redução ou enquadramento favorecido do GILRAT nas hipóteses listadas no Anexo Único.</descricao>
+  </beneficio>
+  <beneficio codigo="66" vigenciaInicio="202401" tributos="Cide-remessas">
+    <nome>Cide-remessas — hipóteses de redução ou isenção</nome>
+    <descricao>Redução/isenção da Cide incidente sobre remessas ao exterior (Lei nº 10.168/2000).</descricao>
+  </beneficio>
+  <beneficio codigo="67" vigenciaInicio="202401" tributos="CSRCP">
+    <nome>CSRCP — Contribuição sobre concursos de prognósticos (hipóteses do Anexo)</nome>
+    <descricao>Tratamento favorecido da contribuição sobre receita de concursos de prognósticos.</descricao>
+  </beneficio>
+  <beneficio codigo="68" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Isenção de IRPJ/CSLL — entidades de educação e assistência social (hipóteses do Anexo)</nome>
+    <descricao>Isenção legal de IRPJ e CSLL para entidades que atendam aos requisitos da legislação infraconstitucional listada no Anexo.</descricao>
+  </beneficio>
+  <beneficio codigo="69" vigenciaInicio="202401" tributos="PIS/Pasep">
+    <nome>PIS — entidades sem fins lucrativos (1% sobre folha)</nome>
+    <descricao>Regime específico de PIS sobre a folha de salários para entidades sem fins lucrativos, quando listado no Anexo.</descricao>
+  </beneficio>
+  <beneficio codigo="70" vigenciaInicio="202401" tributos="IPI">
+    <nome>IPI — crédito presumido (hipóteses setoriais)</nome>
+    <descricao>Crédito presumido de IPI previsto em lei setorial constante do Anexo Único.</descricao>
+  </beneficio>
+  <beneficio codigo="71" vigenciaInicio="202401" tributos="II">
+    <nome>Imposto de Importação — redução e ex-tarifário</nome>
+    <descricao>Redução de II via ex-tarifário e demais hipóteses do Anexo.</descricao>
+  </beneficio>
+  <beneficio codigo="72" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Reporto-aduaneiro e recintos alfandegados — PIS/Cofins</nome>
+    <descricao>Suspensão/redução nas operações de recintos e operadores portuários/aeroportuários.</descricao>
+  </beneficio>
+  <beneficio codigo="73" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Serviços de tecnologia da informação — benefícios residuais</nome>
+    <descricao>Hipóteses remanescentes de PIS/Pasep e Cofins para TI e TICs.</descricao>
+  </beneficio>
+  <beneficio codigo="74" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Prejuízo fiscal e base negativa — utilização incentivada (hipóteses do Anexo)</nome>
+    <descricao>Regras especiais de aproveitamento de prejuízo fiscal/base negativa quando previstas no Anexo.</descricao>
+  </beneficio>
+  <beneficio codigo="75" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Entidades financeiras — regimes especiais de PIS/Cofins</nome>
+    <descricao>Alíquotas e bases especiais de PIS/Pasep e Cofins aplicáveis a instituições financeiras, quando listadas.</descricao>
+  </beneficio>
+  <beneficio codigo="76" vigenciaInicio="202401" tributos="IRPJ">
+    <nome>Incentivo à cultura audiovisual (ANCINE / FUNCINES e correlatos)</nome>
+    <descricao>Deduções e benefícios de IRPJ vinculados à produção audiovisual brasileira.</descricao>
+  </beneficio>
+  <beneficio codigo="77" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins;IPI">
+    <nome>Indústria naval — construção e reparo de embarcações</nome>
+    <descricao>Suspensão/redução de tributos na construção, consolidação e reparo naval.</descricao>
+  </beneficio>
+  <beneficio codigo="78" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Aviação civil — querosene e serviços aeroportuários</nome>
+    <descricao>Tratamento favorecido de PIS/Pasep e Cofins na aviação civil.</descricao>
+  </beneficio>
+  <beneficio codigo="79" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Variação cambial e ajustes de precificação de transferência (hipóteses do Anexo)</nome>
+    <descricao>Tratamentos tributários específicos de IRPJ/CSLL listados no Anexo Único.</descricao>
+  </beneficio>
+  <beneficio codigo="80" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Papel destinado à impressão de livros, jornais e periódicos</nome>
+    <descricao>Alíquota zero de PIS/Pasep e Cofins na comercialização de papel imune.</descricao>
+  </beneficio>
+  <beneficio codigo="81" vigenciaInicio="202401" tributos="IPI">
+    <nome>IPI — produtos destinados à alimentação humana (hipóteses)</nome>
+    <descricao>Isenção ou alíquota zero de IPI sobre gêneros alimentícios previstos em decreto.</descricao>
+  </beneficio>
+  <beneficio codigo="82" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Construção civil — créditos e regimes especiais de PIS/Cofins</nome>
+    <descricao>Créditos e suspensões aplicáveis a construtoras e incorporadoras nas hipóteses do Anexo.</descricao>
+  </beneficio>
+  <beneficio codigo="83" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Incorporação imobiliária — patrimônio de afetação (efeitos no IRPJ/CSLL)</nome>
+    <descricao>Efeitos tributários do patrimônio de afetação quando constantes do Anexo Único.</descricao>
+  </beneficio>
+  <beneficio codigo="84" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Prestação de serviços para o exterior — não incidência</nome>
+    <descricao>Não incidência de PIS/Pasep e Cofins sobre serviços exportados.</descricao>
+  </beneficio>
+  <beneficio codigo="85" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>Receitas de royalties e software — hipóteses favorecidas</nome>
+    <descricao>Tratamento de PIS/Pasep e Cofins sobre royalties e licenciamento de software nas hipóteses do Anexo.</descricao>
+  </beneficio>
+  <beneficio codigo="86" vigenciaInicio="202401" tributos="IRPJ;CSLL">
+    <nome>Juros sobre o capital próprio — efeitos quando listados no Anexo</nome>
+    <descricao>Tratamento de JCP nas hipóteses eventualmente relacionadas no Anexo Único.</descricao>
+  </beneficio>
+  <beneficio codigo="87" vigenciaInicio="202401" tributos="PIS/Pasep;Cofins">
+    <nome>REINTEGRA (quando vigente / resíduos de direito)</nome>
+    <descricao>Ressarcimento de resíduos tributários na exportação (REINTEGRA), nas competências em que o benefício constar do Anexo.</descricao>
+  </beneficio>
+  <beneficio codigo="88" vigenciaInicio="202401" tributos="IRPJ;CSLL;PIS/Pasep;Cofins">
+    <nome>Demais benefícios do bloco original do Anexo Único (itens 01–88)</nome>
+    <descricao>Item de fechamento para benefícios do bloco 01–88 não discriminados nominalmente nesta simulação. Atualize o XML com o texto oficial do Anexo.</descricao>
+  </beneficio>
+
+  <!-- ===== GRUPO B — Itens 89–173 (obrigatórios a partir de jan/2026) ===== -->
+  <beneficio codigo="89" vigenciaInicio="202601" tributos="IRPJ">
+    <nome>PAT — detalhamento complementar (bloco 2026)</nome>
+    <descricao>Hipóteses complementares do Programa de Alimentação do Trabalhador incluídas no Anexo pela IN RFB nº 2.294/2025.</descricao>
+  </beneficio>
+  <beneficio codigo="90" vigenciaInicio="202601" tributos="IRPJ">
+    <nome>Programa Empresa Cidadã — hipóteses complementares</nome>
+    <descricao>Ampliação das informações exigidas sobre o Programa Empresa Cidadã a partir de jan/2026.</descricao>
+  </beneficio>
+  <beneficio codigo="91" vigenciaInicio="202601" tributos="IRPJ;CSLL">
+    <nome>Operações de cobertura (hedge) — hipóteses ampliadas</nome>
+    <descricao>Novas hipóteses de hedge incluídas nos itens 89–173.</descricao>
+  </beneficio>
+  <beneficio codigo="92" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins;IPI;II">
+    <nome>REPETRO-Industrialização — detalhamento 2026</nome>
+    <descricao>Informações adicionais do REPETRO-Industrialização exigíveis a partir de jan/2026.</descricao>
+  </beneficio>
+  <beneficio codigo="93" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins;IPI;II">
+    <nome>REPETRO-SPED Permanente</nome>
+    <descricao>Regime REPETRO-SPED na modalidade permanente.</descricao>
+  </beneficio>
+  <beneficio codigo="94" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins;IPI;II">
+    <nome>REPETRO-SPED Temporário</nome>
+    <descricao>Regime REPETRO-SPED na modalidade temporária.</descricao>
+  </beneficio>
+  <beneficio codigo="95" vigenciaInicio="202601" tributos="II;IPI;PIS/Pasep;Cofins">
+    <nome>Importação de partes e peças — embarcações REB (bloco 2026)</nome>
+    <descricao>Hipóteses ampliadas de importação/venda de partes e peças para embarcações no REB.</descricao>
+  </beneficio>
+  <beneficio codigo="96" vigenciaInicio="202601" tributos="II;IPI;PIS/Pasep;Cofins">
+    <nome>Importação de partes e peças de aeronaves e embarcações — Lei nº 8.032/1990 (bloco 2026)</nome>
+    <descricao>Detalhamento adicional das isenções da Lei nº 8.032/1990.</descricao>
+  </beneficio>
+  <beneficio codigo="97" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins;IPI;II">
+    <nome>ZPE — hipóteses complementares</nome>
+    <descricao>Novas informações exigidas de empresas autorizadas em Zona de Processamento de Exportação.</descricao>
+  </beneficio>
+  <beneficio codigo="98" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins">
+    <nome>Programa Mais Leite Saudável — crédito presumido (bloco 2026)</nome>
+    <descricao>Crédito presumido sobre leite in natura, com obrigatoriedade plena a partir de jan/2026 quando reclassificado neste bloco.</descricao>
+  </beneficio>
+  <beneficio codigo="99" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins">
+    <nome>Produtos hortícolas, frutas e ovos — bloco 2026</nome>
+    <descricao>Novas hipóteses de PIS/Pasep e Cofins sobre hortícolas, frutas e ovos.</descricao>
+  </beneficio>
+  <beneficio codigo="100" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins">
+    <nome>Sêmens e embriões — bloco 2026</nome>
+    <descricao>Benefícios ampliados sobre material genético animal.</descricao>
+  </beneficio>
+  <beneficio codigo="101" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins">
+    <nome>Carnes suína e avícola adquiridas de pessoa jurídica — bloco 2026</nome>
+    <descricao>Crédito presumido na aquisição de carnes suína e de aves de PJ no País.</descricao>
+  </beneficio>
+  <beneficio codigo="110" vigenciaInicio="202601" tributos="IRPJ;CSLL;PIS/Pasep;Cofins">
+    <nome>RET Incorporações — bloco 2026</nome>
+    <descricao>Informações adicionais do RET aplicável a incorporações imobiliárias.</descricao>
+  </beneficio>
+  <beneficio codigo="111" vigenciaInicio="202601" tributos="IRPJ;CSLL;PIS/Pasep;Cofins">
+    <nome>RET Construções — bloco 2026</nome>
+    <descricao>Informações adicionais do RET aplicável a construções habitacionais.</descricao>
+  </beneficio>
+  <beneficio codigo="112" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins;IPI">
+    <nome>REPES — bloco 2026</nome>
+    <descricao>Ampliação das informações do REPES.</descricao>
+  </beneficio>
+  <beneficio codigo="113" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins;IPI">
+    <nome>RETID — bloco 2026</nome>
+    <descricao>Ampliação das informações do regime da indústria de defesa.</descricao>
+  </beneficio>
+  <beneficio codigo="114" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins;IRPJ;CSLL">
+    <nome>RECINE — bloco 2026</nome>
+    <descricao>Ampliação das informações do RECINE.</descricao>
+  </beneficio>
+  <beneficio codigo="120" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins">
+    <nome>Câmara de Comercialização de Energia Elétrica — bloco 2026</nome>
+    <descricao>Benefícios de PIS/Pasep e Cofins em operações no CCEE.</descricao>
+  </beneficio>
+  <beneficio codigo="121" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins">
+    <nome>Carvão mineral — bloco 2026</nome>
+    <descricao>Hipóteses ampliadas de benefícios sobre carvão mineral.</descricao>
+  </beneficio>
+  <beneficio codigo="122" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins">
+    <nome>Gás natural — bloco 2026</nome>
+    <descricao>Hipóteses ampliadas de benefícios sobre gás natural.</descricao>
+  </beneficio>
+  <beneficio codigo="123" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins">
+    <nome>Biodiesel — bloco 2026</nome>
+    <descricao>Hipóteses ampliadas de benefícios sobre biodiesel.</descricao>
+  </beneficio>
+  <beneficio codigo="124" vigenciaInicio="202601" tributos="IRPJ;CSLL">
+    <nome>Doações para conservação ambiental — bloco 2026</nome>
+    <descricao>Novas hipóteses de incentivo ambiental exigíveis a partir de jan/2026.</descricao>
+  </beneficio>
+  <beneficio codigo="130" vigenciaInicio="202601" tributos="IRPJ">
+    <nome>PRONAC — bloco 2026</nome>
+    <descricao>Detalhamento complementar do incentivo à cultura.</descricao>
+  </beneficio>
+  <beneficio codigo="131" vigenciaInicio="202601" tributos="IRPJ">
+    <nome>Incentivo ao desporto — bloco 2026</nome>
+    <descricao>Detalhamento complementar do incentivo ao desporto.</descricao>
+  </beneficio>
+  <beneficio codigo="132" vigenciaInicio="202601" tributos="IRPJ">
+    <nome>PROUNI — bloco 2026</nome>
+    <descricao>Informações adicionais do Prouni exigíveis a partir de jan/2026.</descricao>
+  </beneficio>
+  <beneficio codigo="133" vigenciaInicio="202601" tributos="IRPJ">
+    <nome>Fundos da Criança e do Adolescente — bloco 2026</nome>
+    <descricao>Detalhamento complementar das doações aos fundos da criança e do adolescente.</descricao>
+  </beneficio>
+  <beneficio codigo="134" vigenciaInicio="202601" tributos="IRPJ">
+    <nome>Fundos do Idoso — bloco 2026</nome>
+    <descricao>Detalhamento complementar das doações aos fundos do idoso.</descricao>
+  </beneficio>
+  <beneficio codigo="140" vigenciaInicio="202601" tributos="IRPJ;CSLL">
+    <nome>Depreciação acelerada — bloco 2026</nome>
+    <descricao>Novas hipóteses de depreciação acelerada incluídas no Anexo.</descricao>
+  </beneficio>
+  <beneficio codigo="150" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins">
+    <nome>Livros e livros digitais — bloco 2026</nome>
+    <descricao>Inclusão/ampliação da venda de livros e livros digitais no Anexo Único.</descricao>
+  </beneficio>
+  <beneficio codigo="160" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins">
+    <nome>Dispositivos de acessibilidade (cadeiras de rodas, aparelhos auditivos, implantes, Braille)</nome>
+    <descricao>Alíquota zero de PIS/Pasep e Cofins sobre tecnologias assistivas.</descricao>
+  </beneficio>
+  <beneficio codigo="161" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins">
+    <nome>Neuroestimuladores e tecnologias para Parkinson</nome>
+    <descricao>Alíquota zero sobre equipamentos médicos específicos listados no Anexo 2026.</descricao>
+  </beneficio>
+  <beneficio codigo="170" vigenciaInicio="202601" tributos="PIS/Pasep;Cofins;IRPJ">
+    <nome>Benefícios residuais do bloco 89–173 (PIS/Cofins e IRPJ)</nome>
+    <descricao>Item de agrupamento para os demais benefícios do bloco 89–173. Substitua pelos 173 textos oficiais do Anexo Único quando for atualizar o XML.</descricao>
+  </beneficio>
+  <beneficio codigo="173" vigenciaInicio="202601" tributos="Diversos">
+    <nome>Item 173 — último do Anexo Único (IN RFB nº 2.294/2025)</nome>
+    <descricao>Marcador do encerramento oficial do Anexo (173 itens). Preencha com o texto publicado no DOU ao atualizar a base.</descricao>
+  </beneficio>
+</beneficios>
+
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

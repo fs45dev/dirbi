@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Arquivo de persistência local das consultas DIRBI.
+  Schema:
+    <empresas>
+      <empresa consultadoEm="ISO-8601">
+        <razaoSocial>...</razaoSocial>
+        <cnpj>...</cnpj>
+        <cnae codigo="0000-0/00">descrição</cnae>
+        <regime>lucro-real|lucro-presumido|simples-nacional|imune|isenta</regime>
+        <periodo>AAAA-MM</periodo>
+        <usufruiuBeneficio>sim|nao</usufruiuBeneficio>
+        <utilizouCprb>sim|nao|nao-se-aplica</utilizouCprb>
+        <beneficios>
+          <beneficio codigo="07">CPRB — ...</beneficio>
+        </beneficios>
+        <resultado obrigada="true|false" status="obrigada|dispensada">
+          <parecer>...</parecer>
+          <fundamentacao>...</fundamentacao>
+          <prazo>...</prazo>
+        </resultado>
+      </empresa>
+    </empresas>
+  A aplicação grava/lê este XML no navegador (download e importação).
+-->
+<empresas versaoSchema="1.0" aplicativo="Verificador de Obrigatoriedade da DIRBI">
+  <empresa consultadoEm="2026-09-24T09:00:00-03:00">
+    <razaoSocial>EXEMPLO INDUSTRIA E COMERCIO LTDA</razaoSocial>
+    <cnpj>11.222.333/0001-81</cnpj>
+    <cnae codigo="1012-1/01">Frigorífico - abate de suínos</cnae>
+    <regime>lucro-real</regime>
+    <periodo>2026-01</periodo>
+    <usufruiuBeneficio>sim</usufruiuBeneficio>
+    <utilizouCprb>nao-se-aplica</utilizouCprb>
+    <beneficios>
+      <beneficio codigo="07">CPRB — Contribuição Previdenciária sobre a Receita Bruta (desoneração da folha)</beneficio>
+      <beneficio codigo="62">Crédito presumido — carnes suína e avícola</beneficio>
+    </beneficios>
+    <resultado obrigada="true" status="obrigada">
+      <parecer>Pessoa jurídica no lucro real que usufruiu benefícios constantes do Anexo Único no período de referência.</parecer>
+      <fundamentacao>Art. 43 da Lei nº 14.973/2024; arts. 1º e 2º da IN RFB nº 2.198/2024 (redação da IN RFB nº 2.294/2025).</fundamentacao>
+      <prazo>20/03/2026</prazo>
+    </resultado>
+  </empresa>
+</empresas>
